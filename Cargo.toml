@@ -1,0 +1,7 @@
+[workspace]
+members = [
+	"grandeur",
+	"grandeur_gdnative",
+	"grandeur_gdnative/test",
+	"grandeur_gdnative_macros",
+]

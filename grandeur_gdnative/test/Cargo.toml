@@ -1,0 +1,18 @@
+[package]
+name = "grandeur_gdnative_test"
+version = "0.0.1"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+workspace = "../.."
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+grandeur = { path = "../../grandeur", features = ["nightly"] }
+gdnative = "0.10"
+grandeur_gdnative = { path = "..", features = ["macros"] }
+log = "0.4.0"

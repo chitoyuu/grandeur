@@ -1,0 +1,28 @@
+[package]
+name = "grandeur_gdnative"
+version = "0.0.1"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+workspace = ".."
+repository = "https://github.com/chitoyuu/grandeur"
+documentation = "https://docs.rs/grandeur"
+authors = ["Chitose Yuuzaki <chitoyuu@potatoes.gay>"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+gdnative = "0.10"
+grandeur = { path = "../grandeur", features = ["nightly"] }
+grandeur_gdnative_macros = { path = "../grandeur_gdnative_macros", optional = true }
+derivative = "2.2"
+hashbrown = "0.11.2"
+thiserror = "1.0"
+crossbeam-channel = "0.5.1"
+indexmap = "1.7.0"
+ahash = "0.7.6"
+log = "0.4.0"
+
+[features]
+default = []
+nightly = []
+macros = ["grandeur_gdnative_macros"]

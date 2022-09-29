@@ -1,0 +1,19 @@
+[entry]
+
+X11.32="res://../../../target/debug/libgrandeur_gdnative_test.so"
+X11.64="res://../../../target/debug/libgrandeur_gdnative_test.so"
+Server.32="res://../../../target/debug/libgrandeur_gdnative_test.so"
+Server.64="res://../../../target/debug/libgrandeur_gdnative_test.so"
+Windows="res://../../../target/debug/grandeur_gdnative_test.dll"
+OSX.64="res://../../../target/debug/libgrandeur_gdnative_test.dylib"
+
+[dependencies]
+
+X11.64=[  ]
+
+[general]
+
+singleton=false
+load_once=true
+symbol_prefix="godot_"
+reloadable=false

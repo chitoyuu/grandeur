@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://todo_app.gdns" type="Script" id=1]
+
+[node name="Node" type="Node2D"]
+
+[node name="todo" type="Node2D" parent="."]
+position = Vector2( 12, 12 )
+script = ExtResource( 1 )
