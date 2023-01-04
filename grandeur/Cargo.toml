@@ -5,7 +5,7 @@ repository = "https://github.com/chitoyuu/grandeur"
 documentation = "https://docs.rs/grandeur"
 authors = ["Chitose Yuuzaki <chitoyuu@potatoes.gay>"]
 license = "MPL-2.0"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 readme = "../README.md"
 keywords = ["nightly"]
@@ -14,8 +14,8 @@ workspace = ".."
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ahash = "0.7.6"
-hashbrown = "0.11.2"
+ahash = "0.8"
+hashbrown = "0.13"
 
 [features]
 default = ["std"]

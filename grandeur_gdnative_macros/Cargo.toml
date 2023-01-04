@@ -1,6 +1,6 @@
 [package]
 name = "grandeur_gdnative_macros"
-version = "0.1.0"
+version = "0.1.1"
 description = "RSX macros for generic abstract Update-Render-Reconcile-Thing"
 edition = "2021"
 license = "MPL-2.0"
@@ -15,6 +15,6 @@ proc_macro = true
 [dependencies]
 syn = { version = "1.0", features = ["extra-traits", "visit", "visit-mut"] }
 quote = "1.0"
-syn-rsx = "0.8"
+syn-rsx = "0.9"
 proc-macro2 = "1.0"
 proc-macro-crate = "1.1.0"

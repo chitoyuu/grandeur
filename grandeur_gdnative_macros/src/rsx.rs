@@ -1,7 +1,7 @@
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::{quote, ToTokens};
-use syn::Error;
-use syn_rsx::{Node as RsxNode, NodeName, NodeType};
+use syn::{spanned::Spanned, Error};
+use syn_rsx::{Node as RsxNode, NodeName};
 
 pub fn expand_vtree(input: RsxNode, root: bool) -> Result<TokenStream, Error> {
     let found_crate = proc_macro_crate::crate_name("grandeur_gdnative")
@@ -23,18 +23,26 @@ fn expand_node(
     input: RsxNode,
     root: bool,
 ) -> Result<TokenStream, Error> {
-    match input.node_type {
-        NodeType::Element => expand_element(found_crate, input, root),
-        NodeType::Fragment => expand_fragment(found_crate, input),
-        NodeType::Block => Ok(input.value_as_block().unwrap().into_token_stream()),
-        NodeType::Attribute | NodeType::Comment | NodeType::Doctype | NodeType::Text => {
-            Err(Error::new(error_span(&input), "invalid top level element"))
-        }
+    match input {
+        RsxNode::Element(elem) => expand_element(found_crate, elem, root),
+        RsxNode::Fragment(fragment) => expand_fragment(found_crate, fragment),
+        RsxNode::Block(block) => Ok(block.value.to_token_stream()),
+        RsxNode::Attribute(..)
+        | RsxNode::Comment(..)
+        | RsxNode::Doctype(..)
+        | RsxNode::Text(..) => Err(Error::new(error_span(&input), "invalid top level element")),
     }
 }
 
-fn expand_fragment(found_crate: &TokenStream, input: RsxNode) -> Result<TokenStream, Error> {
-    if let Some(attr) = input.attributes.get(0) {
+fn expand_fragment(
+    found_crate: &TokenStream,
+    input: syn_rsx::NodeFragment,
+) -> Result<TokenStream, Error> {
+    if let Some(attr) = input
+        .children
+        .iter()
+        .find(|n| matches!(n, RsxNode::Attribute(_)))
+    {
         return Err(Error::new(
             error_span(attr),
             "attributes are not allowed on fragments",
@@ -61,7 +69,7 @@ fn expand_fragment(found_crate: &TokenStream, input: RsxNode) -> Result<TokenStr
 
 fn expand_element(
     found_crate: &TokenStream,
-    input: RsxNode,
+    input: syn_rsx::NodeElement,
     root: bool,
 ) -> Result<TokenStream, Error> {
     enum PathKind {
@@ -69,8 +77,8 @@ fn expand_element(
         VarIdent,
     }
 
-    let input_name_span = input.name_span().unwrap();
-    let node_data = match input.name.unwrap() {
+    let input_name_span = input.name.span().unwrap().into();
+    let node_data = match input.name {
         NodeName::Block(expr) => expr.into_token_stream(),
         NodeName::Path(path) => {
             let path = path.path;
@@ -107,7 +115,7 @@ fn expand_element(
                 },
             }
         }
-        NodeName::Dash(_) | NodeName::Colon(_) => {
+        NodeName::Punctuated(_) => {
             return Err(Error::new(input_name_span, "unsupported element name"));
         }
     };
@@ -123,15 +131,15 @@ fn expand_element(
                 Connect(Ident),
             }
 
-            if node.node_type != NodeType::Attribute {
+            let RsxNode::Attribute(node) = node else {
                 return Err(Error::new(
                     error_span(&node),
                     "block attributes are not supported",
                 ));
-            }
+            };
 
-            let attr_name_span = node.name_span().unwrap();
-            let attr_kind = match node.name.unwrap() {
+            let attr_name_span = node.key.span().unwrap().into();
+            let attr_kind = match node.key {
                 NodeName::Path(path) => {
                     if let Some(ident) = path.path.get_ident() {
                         AttrKind::Prop(ident.clone())
@@ -139,7 +147,7 @@ fn expand_element(
                         return Err(Error::new_spanned(path, "use single colons for namespaces"));
                     }
                 }
-                NodeName::Colon(list) => {
+                NodeName::Punctuated(list) => {
                     if list.len() == 1 {
                         AttrKind::Prop(list[0].clone())
                     } else if list.len() == 2 {
@@ -171,7 +179,7 @@ fn expand_element(
 
             let value =
                 node.value
-                    .map(|e| e.into_token_stream())
+                    .map(|e| e.to_token_stream())
                     .unwrap_or_else(|| match &attr_kind {
                         AttrKind::Key => quote! { key },
                         AttrKind::PreferAsIs => quote! { true },
@@ -225,5 +233,11 @@ fn expand_element(
 }
 
 fn error_span(node: &RsxNode) -> Span {
-    node.name_span().unwrap_or_else(Span::call_site)
+    let name = match node {
+        RsxNode::Element(elem) => Some(&elem.name),
+        RsxNode::Attribute(attr) => Some(&attr.key),
+        _ => None,
+    };
+
+    name.map(|n| n.span()).unwrap_or_else(Span::call_site)
 }

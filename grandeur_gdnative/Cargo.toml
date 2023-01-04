@@ -1,6 +1,6 @@
 [package]
 name = "grandeur_gdnative"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 description = "GDNative backend for generic abstract Update-Render-Reconcile-Thing"
 license = "MIT OR Apache-2.0"
@@ -13,9 +13,9 @@ keywords = ["nightly"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-gdnative = "0.10"
-grandeur = { version = "0.0.1", path = "../grandeur" }
-grandeur_gdnative_macros = { version = "0.1.0", path = "../grandeur_gdnative_macros", optional = true }
+gdnative = "0.11"
+grandeur = { version = "0.1.0", path = "../grandeur" }
+grandeur_gdnative_macros = { version = "0.1.1", path = "../grandeur_gdnative_macros", optional = true }
 derivative = "2.2"
 hashbrown = "0.11.2"
 thiserror = "1.0"

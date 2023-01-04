@@ -13,6 +13,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 grandeur = { path = "../../grandeur", features = ["nightly"] }
-gdnative = "0.10"
+gdnative = "0.11"
 grandeur_gdnative = { path = "..", features = ["macros"] }
 log = "0.4.0"

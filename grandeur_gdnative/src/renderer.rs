@@ -111,7 +111,7 @@ impl<N, M: Msg> NativeClassMethods for Renderer<N, M>
 where
     N: GodotObject + SubClass<Node> + 'static,
 {
-    fn register(builder: &ClassBuilder<Self>) {
+    fn nativeclass_register(builder: &ClassBuilder<Self>) {
         builder.signal("up_to_date").done();
         register_handler(builder);
         register_process(builder);

@@ -1,7 +1,4 @@
-#![cfg_attr(
-    feature = "nightly",
-    feature(type_alias_impl_trait, never_type)
-)]
+#![cfg_attr(feature = "nightly", feature(type_alias_impl_trait, never_type))]
 
 use std::fmt::Display;
 
